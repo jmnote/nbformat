@@ -1,4 +1,4 @@
-module github.com/jmnote/notebookgo
+module github.com/jmnote/notebook-go
 
 go 1.22.3
 
