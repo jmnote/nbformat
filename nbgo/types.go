@@ -1,6 +1,6 @@
 package nbgo
 
-type Dict = map[string]any
+type StringMap = map[string]any
 
 type Notebook struct {
 	Cells         []Cell   `json:"cells"`
@@ -12,10 +12,10 @@ type Notebook struct {
 type Metadata struct {
 	CellToolbar  string      `json:"celltoolbar,omitempty"`
 	Kernelspec   *Kernelspec `json:"kernelspec,omitempty"`
-	LanguageInfo Dict        `json:"language_info,omitempty"`
+	LanguageInfo StringMap   `json:"language_info,omitempty"`
 	Signature    string      `json:"signature,omitempty"`
 	Title        string      `json:"title,omitempty"`
-	Widgets      Dict        `json:"widgets,omitempty"`
+	Widgets      StringMap   `json:"widgets,omitempty"`
 }
 
 // omitempty issue
@@ -33,20 +33,37 @@ type Kernelspec struct {
 // https://nbformat.readthedocs.io/en/latest/format_description.html#cell-types
 // TODO: we need omitnil https://github.com/golang/go/issues/22480
 type Cell struct {
-	Attachments    Dict     `json:"attachments,omitempty"`
-	CellType       string   `json:"cell_type"`
-	ExecutionCount *int     `json:"execution_count,omitempty"`
-	ID             string   `json:"id,omitempty"`
-	Metadata       Dict     `json:"metadata"`
-	Outputs        []Output `json:"outputs"`
-	Source         []string `json:"source"`
+	Attachments    StringMap `json:"attachments,omitempty"`
+	CellType       CellType  `json:"cell_type"`
+	ExecutionCount *int      `json:"execution_count,omitempty"`
+	ID             string    `json:"id,omitempty"`
+	Metadata       StringMap `json:"metadata"`
+	Outputs        []Output  `json:"outputs"`
+	Source         []string  `json:"source"`
 }
 
+type CellType string
+
+const (
+	CellTypeMarkdown CellType = "markdown"
+	CellTypeCode     CellType = "code"
+	CellTypeRaw      CellType = "raw"
+)
+
 type Output struct {
-	Data           Dict     `json:"data,omitempty"`
-	ExecutionCount *int     `json:"execution_count,omitempty"`
-	Metadata       *Dict    `json:"metadata,omitempty"`
-	Name           string   `json:"name,omitempty"`
-	OutputType     string   `json:"output_type,omitempty"`
-	Text           []string `json:"text,omitempty"`
+	Data           StringMap  `json:"data,omitempty"`
+	ExecutionCount *int       `json:"execution_count,omitempty"`
+	Metadata       *StringMap `json:"metadata,omitempty"`
+	Name           string     `json:"name,omitempty"`
+	OutputType     OutputType `json:"output_type,omitempty"`
+	Text           []string   `json:"text,omitempty"`
 }
+
+type OutputType string
+
+const (
+	OutputTypeDisplayData   OutputType = "display_data"
+	OutputTypeExecuteResult OutputType = "execute_result"
+	OutputTypeStream        OutputType = "stream"
+	OutputTypeError         OutputType = "error"
+)
