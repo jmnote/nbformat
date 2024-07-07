@@ -1,4 +1,4 @@
-package nbgo
+package myfiles
 
 import (
 	"bytes"
@@ -6,8 +6,18 @@ import (
 	"os"
 	"testing"
 
+	"github.com/jmnote/notebook-go/nbgo"
 	"github.com/stretchr/testify/require"
 	"k8s.io/utils/ptr"
+)
+
+type (
+	Cell       = nbgo.Cell
+	Dict       = nbgo.Dict
+	Kernelspec = nbgo.Kernelspec
+	Metadata   = nbgo.Metadata
+	Notebook   = nbgo.Notebook
+	Output     = nbgo.Output
 )
 
 var (
@@ -32,10 +42,10 @@ func readFile(filePath string) string {
 
 func init() {
 	// json
-	json1 = readFile("./samples/sample1.json")
-	json2 = readFile("./samples/sample2.json")
-	json3 = readFile("./samples/sample3.json")
-	json4 = readFile("./samples/sample4.json")
+	json1 = readFile("sample1.json")
+	json2 = readFile("sample2.json")
+	json3 = readFile("sample3.json")
+	json4 = readFile("sample4.json")
 
 	// notebook
 	notebook1 = Notebook{
@@ -54,7 +64,7 @@ func init() {
 				Language:    "Python",
 				Name:        "python3",
 			},
-			LanguageInfo: &Dict{
+			LanguageInfo: Dict{
 				"codemirror_mode": Dict{
 					"name":    "ipython",
 					"version": float64(3),
@@ -98,7 +108,7 @@ func init() {
 				Language:    "Python",
 				Name:        "python3",
 			},
-			LanguageInfo: &Dict{
+			LanguageInfo: Dict{
 				"codemirror_mode": Dict{
 					"name":    "ipython",
 					"version": float64(3),
@@ -130,7 +140,7 @@ func init() {
 				Language:    "R",
 				Name:        "ir",
 			},
-			LanguageInfo: &Dict{
+			LanguageInfo: Dict{
 				"codemirror_mode": "r",
 				"file_extension":  ".r",
 				"mimetype":        "text/x-r-source",
@@ -171,7 +181,7 @@ func init() {
 				Language:    "R",
 				Name:        "ir",
 			},
-			LanguageInfo: &Dict{
+			LanguageInfo: Dict{
 				"codemirror_mode": "r",
 				"file_extension":  ".r",
 				"mimetype":        "text/x-r-source",
@@ -279,6 +289,11 @@ func TestToJSON(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			got, err := json.Marshal(tc.input)
 			require.NoError(t, err)
+
+			// JSON
+			require.JSONEq(t, tc.wantJSON, string(got))
+
+			// compacted json string
 			buf := &bytes.Buffer{}
 			err = json.Compact(buf, []byte(tc.wantJSON))
 			require.NoError(t, err)
