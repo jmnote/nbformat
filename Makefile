@@ -12,7 +12,7 @@ lint:
 
 licenses:
 	go install -v github.com/google/go-licenses@$(GO_LICENSES_VER) || true
-	go-licenses check ./nbgo
+	go-licenses check .
 .PHONY: licenses
 
 checks: test lint licenses

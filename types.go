@@ -1,4 +1,4 @@
-package nbgo
+package nbformat
 
 type StringMap = map[string]any
 
