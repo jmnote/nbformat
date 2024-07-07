@@ -1,13 +1,13 @@
-# Notebook Format (nbformat) For Go 
+# Notebook Format (nbformat) for Go 
 This package provides Notebook Format structs for Go developers.
 
 ## Goal
-Enable lossless bidirectional conversion between `nbformat` and Go struct `Notebook`.
+To enable lossless bidirectional conversion between `nbformat` and Go struct `Notebook`.
 
 ## Testing
-Tested using ipynb json files generated with nbconvert and all the test ipynb files available in the [nbconvert](https://github.com/jupyter/nbconvert) repository.
-See the `tests` directory for more details.
+Tested using ipynb JSON files generated with nbconvert, as well as all the test ipynb files available in the [nbconvert](https://github.com/jupyter/nbconvert) repository.
+For more details, see the `tests` directory.
 
 ## Known Issue
-For optionals, should we use omitempty or not?
+Should we use `omitempty` for optionals or not? 
 https://github.com/jmnote/notebook-go/issues/7
