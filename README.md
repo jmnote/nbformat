@@ -7,7 +7,3 @@ To enable lossless bidirectional conversion between `nbformat` and Go struct `No
 ## Testing
 Tested using ipynb JSON files generated with nbconvert, as well as all the test ipynb files available in the [nbconvert](https://github.com/jupyter/nbconvert) repository.
 For more details, see the `tests` directory.
-
-## Known Issue
-Should we use `omitempty` for optionals or not? 
-https://github.com/jmnote/notebook-go/issues/7
