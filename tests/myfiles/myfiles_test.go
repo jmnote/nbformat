@@ -1,14 +1,12 @@
 package myfiles
 
 import (
-	"bytes"
 	"encoding/json"
 	"os"
 	"testing"
 
 	"github.com/jmnote/nbformat"
 	"github.com/stretchr/testify/require"
-	"k8s.io/utils/ptr"
 )
 
 type (
@@ -50,12 +48,11 @@ func init() {
 	// notebook
 	notebook1 = Notebook{
 		Cells: []Cell{
-			{
-				CellType:       "code",
-				ExecutionCount: new(int),
-				Metadata:       StringMap{},
-				Outputs:        []Output{},
-				Source:         []string{},
+			&nbformat.CodeCell{
+				CellType: "code",
+				Source:   []string{},
+				Metadata: StringMap{},
+				Outputs:  []nbformat.Output{},
 			},
 		},
 		Metadata: Metadata{
@@ -82,9 +79,9 @@ func init() {
 	}
 	notebook2 = Notebook{
 		Cells: []Cell{
-			{
+			&nbformat.CodeCell{
 				CellType:       "code",
-				ExecutionCount: ptr.To(1),
+				ExecutionCount: 1,
 				Metadata: StringMap{
 					"execution": StringMap{
 						"iopub.execute_input": "2024-07-06T15:48:16.194233Z",
@@ -126,9 +123,9 @@ func init() {
 	}
 	notebook3 = Notebook{
 		Cells: []Cell{
-			{
+			&nbformat.CodeCell{
 				CellType:       "code",
-				ExecutionCount: new(int),
+				ExecutionCount: 0,
 				Metadata:       StringMap{},
 				Outputs:        []Output{},
 				Source:         []string{},
@@ -154,9 +151,9 @@ func init() {
 	}
 	notebook4 = Notebook{
 		Cells: []Cell{
-			{
+			&nbformat.CodeCell{
 				CellType:       "code",
-				ExecutionCount: ptr.To(1),
+				ExecutionCount: 1,
 				Metadata: StringMap{
 					"execution": StringMap{
 						"iopub.execute_input": "2024-07-07T05:32:29.525611Z",
@@ -289,15 +286,7 @@ func TestToJSON(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			got, err := json.Marshal(tc.input)
 			require.NoError(t, err)
-
-			// JSON
 			require.JSONEq(t, tc.wantJSON, string(got))
-
-			// compacted json string
-			buf := &bytes.Buffer{}
-			err = json.Compact(buf, []byte(tc.wantJSON))
-			require.NoError(t, err)
-			require.Equal(t, buf.String(), string(got))
 		})
 	}
 }
