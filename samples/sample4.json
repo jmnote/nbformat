@@ -1,0 +1,45 @@
+{
+    "cells": [
+        {
+            "cell_type": "code",
+            "execution_count": 1,
+            "metadata": {
+                "execution": {
+                    "iopub.execute_input": "2024-07-07T05:32:29.525611Z",
+                    "iopub.status.busy": "2024-07-07T05:32:29.523594Z",
+                    "iopub.status.idle": "2024-07-07T05:32:29.546156Z",
+                    "shell.execute_reply": "2024-07-07T05:32:29.545217Z"
+                }
+            },
+            "outputs": [
+                {
+                    "name": "stdout",
+                    "output_type": "stream",
+                    "text": [
+                        "hello"
+                    ]
+                }
+            ],
+            "source": [
+                "cat('hello')"
+            ]
+        }
+    ],
+    "metadata": {
+        "kernelspec": {
+            "display_name": "R",
+            "language": "R",
+            "name": "ir"
+        },
+        "language_info": {
+            "codemirror_mode": "r",
+            "file_extension": ".r",
+            "mimetype": "text/x-r-source",
+            "name": "R",
+            "pygments_lexer": "r",
+            "version": "4.1.2"
+        }
+    },
+    "nbformat": 4,
+    "nbformat_minor": 4
+}
