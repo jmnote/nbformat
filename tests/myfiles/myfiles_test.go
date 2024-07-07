@@ -6,18 +6,18 @@ import (
 	"os"
 	"testing"
 
-	"github.com/jmnote/notebook-go/nbgo"
+	"github.com/jmnote/nbformat"
 	"github.com/stretchr/testify/require"
 	"k8s.io/utils/ptr"
 )
 
 type (
-	Cell       = nbgo.Cell
-	Kernelspec = nbgo.Kernelspec
-	Metadata   = nbgo.Metadata
-	Notebook   = nbgo.Notebook
-	Output     = nbgo.Output
-	StringMap  = nbgo.StringMap
+	Cell       = nbformat.Cell
+	Kernelspec = nbformat.Kernelspec
+	Metadata   = nbformat.Metadata
+	Notebook   = nbformat.Notebook
+	Output     = nbformat.Output
+	StringMap  = nbformat.StringMap
 )
 
 var (
