@@ -24,14 +24,6 @@ var (
 	files []string
 )
 
-// func readFile(filePath string) string {
-// 	fileBytes, err := os.ReadFile(filePath)
-// 	if err != nil {
-// 		panic(err)
-// 	}
-// 	return string(fileBytes)
-// }
-
 func init() {
 	err := filepath.Walk(".", func(path string, info os.FileInfo, err error) error {
 		if err != nil {
