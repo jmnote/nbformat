@@ -1,4 +1,4 @@
-package notebookgo
+package nbgo
 
 import (
 	"bytes"
