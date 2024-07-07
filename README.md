@@ -7,5 +7,5 @@ Enable lossless bidirectional conversion between nbformat and Go struct Notebook
 Tested with nbconvert ipynb files. See `tests` directory.
 
 ## Known issue
-for optionals, omitempty or not?
+For optionals, should we use omitempty or not?
 https://github.com/jmnote/notebook-go/issues/7
