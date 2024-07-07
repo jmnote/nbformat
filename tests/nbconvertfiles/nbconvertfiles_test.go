@@ -13,11 +13,11 @@ import (
 
 type (
 	Cell       = nbgo.Cell
-	Dict       = nbgo.Dict
 	Kernelspec = nbgo.Kernelspec
 	Metadata   = nbgo.Metadata
 	Notebook   = nbgo.Notebook
 	Output     = nbgo.Output
+	StringMap  = nbgo.StringMap
 )
 
 var (

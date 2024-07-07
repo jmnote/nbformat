@@ -13,11 +13,11 @@ import (
 
 type (
 	Cell       = nbgo.Cell
-	Dict       = nbgo.Dict
 	Kernelspec = nbgo.Kernelspec
 	Metadata   = nbgo.Metadata
 	Notebook   = nbgo.Notebook
 	Output     = nbgo.Output
+	StringMap  = nbgo.StringMap
 )
 
 var (
@@ -53,7 +53,7 @@ func init() {
 			{
 				CellType:       "code",
 				ExecutionCount: new(int),
-				Metadata:       Dict{},
+				Metadata:       StringMap{},
 				Outputs:        []Output{},
 				Source:         []string{},
 			},
@@ -64,8 +64,8 @@ func init() {
 				Language:    "Python",
 				Name:        "python3",
 			},
-			LanguageInfo: Dict{
-				"codemirror_mode": Dict{
+			LanguageInfo: StringMap{
+				"codemirror_mode": StringMap{
 					"name":    "ipython",
 					"version": float64(3),
 				},
@@ -85,8 +85,8 @@ func init() {
 			{
 				CellType:       "code",
 				ExecutionCount: ptr.To(1),
-				Metadata: Dict{
-					"execution": Dict{
+				Metadata: StringMap{
+					"execution": StringMap{
 						"iopub.execute_input": "2024-07-06T15:48:16.194233Z",
 						"iopub.status.busy":   "2024-07-06T15:48:16.190279Z",
 						"iopub.status.idle":   "2024-07-06T15:48:16.197696Z",
@@ -108,8 +108,8 @@ func init() {
 				Language:    "Python",
 				Name:        "python3",
 			},
-			LanguageInfo: Dict{
-				"codemirror_mode": Dict{
+			LanguageInfo: StringMap{
+				"codemirror_mode": StringMap{
 					"name":    "ipython",
 					"version": float64(3),
 				},
@@ -129,7 +129,7 @@ func init() {
 			{
 				CellType:       "code",
 				ExecutionCount: new(int),
-				Metadata:       Dict{},
+				Metadata:       StringMap{},
 				Outputs:        []Output{},
 				Source:         []string{},
 			},
@@ -140,7 +140,7 @@ func init() {
 				Language:    "R",
 				Name:        "ir",
 			},
-			LanguageInfo: Dict{
+			LanguageInfo: StringMap{
 				"codemirror_mode": "r",
 				"file_extension":  ".r",
 				"mimetype":        "text/x-r-source",
@@ -157,8 +157,8 @@ func init() {
 			{
 				CellType:       "code",
 				ExecutionCount: ptr.To(1),
-				Metadata: Dict{
-					"execution": Dict{
+				Metadata: StringMap{
+					"execution": StringMap{
 						"iopub.execute_input": "2024-07-07T05:32:29.525611Z",
 						"iopub.status.busy":   "2024-07-07T05:32:29.523594Z",
 						"iopub.status.idle":   "2024-07-07T05:32:29.546156Z",
@@ -181,7 +181,7 @@ func init() {
 				Language:    "R",
 				Name:        "ir",
 			},
-			LanguageInfo: Dict{
+			LanguageInfo: StringMap{
 				"codemirror_mode": "r",
 				"file_extension":  ".r",
 				"mimetype":        "text/x-r-source",
@@ -209,7 +209,7 @@ func TestToNotebook(t *testing.T) {
 			"unexpected end of JSON input",
 		},
 		{
-			"empty dictionary",
+			"empty StringMapionary",
 			"{}",
 			Notebook{},
 			"",
