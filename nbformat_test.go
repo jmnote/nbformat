@@ -1,4 +1,4 @@
-package nbconvertfiles
+package nbformat
 
 import (
 	"encoding/json"
@@ -7,17 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/jmnote/nbformat"
 	"github.com/stretchr/testify/require"
-)
-
-type (
-	Cell       = nbformat.Cell
-	Kernelspec = nbformat.Kernelspec
-	Metadata   = nbformat.Metadata
-	Notebook   = nbformat.Notebook
-	Output     = nbformat.Output
-	StringMap  = nbformat.StringMap
 )
 
 var (
@@ -39,7 +29,7 @@ func init() {
 	}
 }
 
-func TestLossless(t *testing.T) {
+func TestRemarshalFiles(t *testing.T) {
 	for _, filePath := range files {
 		t.Run(filePath, func(t *testing.T) {
 			fileBytes, err := os.ReadFile(filePath)
@@ -57,15 +47,27 @@ func TestLossless(t *testing.T) {
 			// the keys and values ​​will be missing in the result due to omitempty.
 			want := string(fileBytes)
 			want = strings.ReplaceAll(want, `"language": "",`, "")
-			want = strings.ReplaceAll(want, `"execution_count": null,`, "")
+			want = strings.ReplaceAll(want, `     "execution_count": null,`, ``)
+			want = strings.ReplaceAll(want, `"execution_count": null,`, `"execution_count": 0,`)
 
-			// WORKAROUND: optional but not omitempty for outputs (see types.go)
-			// Even if the original JSON does not have the `outputs` key or the value of `outputs` is null,
-			// the result will always have `"outputs": {}`.
-			got := string(gotBytes)
-			got = strings.ReplaceAll(got, `"outputs":null,`, "")
+			require.JSONEq(t, want, string(gotBytes))
+		})
+	}
+}
 
-			require.JSONEq(t, want, got)
+func TestGetCellType(t *testing.T) {
+	testCases := []struct {
+		cell         Cell
+		wantCellType CellType
+	}{
+		{&CodeCell{}, CellTypeCode},
+		{&MarkdownCell{}, CellTypeMarkdown},
+		{&RawCell{}, CellTypeRaw},
+	}
+	for _, tc := range testCases {
+		t.Run(string(tc.wantCellType), func(t *testing.T) {
+			got := tc.cell.GetCellType()
+			require.Equal(t, tc.wantCellType, got)
 		})
 	}
 }

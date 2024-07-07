@@ -5,6 +5,11 @@ test:
 	go test -v ./... -race -failfast
 .PHONY: test
 
+cover:
+	go test -failfast -coverprofile=/tmp/coverage.out ./...
+	go tool cover -func /tmp/coverage.out
+.PHONY: cover
+
 lint:
 	go install -v github.com/golangci/golangci-lint/cmd/golangci-lint@$(GOLANGCI_LINT_VER) || true
 	golangci-lint run
