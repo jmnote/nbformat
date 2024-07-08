@@ -5,10 +5,6 @@ import (
 	"fmt"
 )
 
-// covers schema v4.0 - v4.5
-// https://github.com/jupyter/nbformat/blob/v5.10.4/nbformat/v4/nbformat.v4.0.schema.json
-// https://github.com/jupyter/nbformat/blob/v5.10.4/nbformat/v4/nbformat.v4.5.schema.json
-
 type (
 	CellType   string
 	OutputType string
@@ -36,9 +32,11 @@ type Notebook struct {
 
 // no required
 type Metadata struct {
+	Authors      []StringMap `json:"authors,omitempty"`
 	CellToolbar  string      `json:"celltoolbar,omitempty"`
 	Kernelspec   *Kernelspec `json:"kernelspec,omitempty"`
 	LanguageInfo StringMap   `json:"language_info,omitempty"`
+	RecordTiming *bool       `json:"record_timing,omitempty"`
 	Signature    string      `json:"signature,omitempty"`
 	Title        string      `json:"title,omitempty"`
 	Widgets      StringMap   `json:"widgets,omitempty"`
@@ -51,18 +49,18 @@ type Kernelspec struct {
 	Language    string `json:"language,omitempty"`
 }
 
-// v4.0 - v4.4
-// raw_cell      "required": [      "cell_type", "metadata", "source"]
-// markdown_cell "required": [      "cell_type", "metadata", "source"]
-// code_cell     "required": [      "cell_type", "metadata", "source", "outputs", "execution_count"]
+// For nbformat versions v4.0 to v4.4:
+// A raw      cell must include the fields: ["cell_type", "metadata", "source"]
+// A markdown cell must include the fields: ["cell_type", "metadata", "source"]
+// A code     cell must include the fields: ["cell_type", "metadata", "source", "outputs", "execution_count"]
 //
-// v4.5
-// raw_cell      "required": ["id", "cell_type", "metadata", "source"]
-// markdown_cell "required": ["id", "cell_type", "metadata", "source"]
-// code_cell     "required": ["id", "cell_type", "metadata", "source", "outputs", "execution_count"]
+// Starting from nbformat version v4.5:
+// A raw      cell must include the fields: ["id", "cell_type", "metadata", "source"]
+// A markdown cell must include the fields: ["id", "cell_type", "metadata", "source"]
+// A code     cell must include the fields: ["id", "cell_type", "metadata", "source", "outputs", "execution_count"]
 //
-// "id" will not be set to "omitempty" to maintain backward compatibility.
-
+// This means that in version v4.5, the "id" field is added as a requirement for all types of cells, in addition to the previously required fields.
+// However, the "id" field will be set to "omitempty" to maintain backward compatibility.
 type Cell interface {
 	GetCellType() CellType
 }
@@ -77,7 +75,7 @@ type RawCell struct {
 
 type MarkdownCell struct {
 	ID          string    `json:"id,omitempty"`
-	CellType    string    `json:"cell_type"`
+	CellType    CellType  `json:"cell_type"`
 	Metadata    StringMap `json:"metadata"`
 	Source      []string  `json:"source"`
 	Attachments StringMap `json:"attachments,omitempty"`
@@ -94,25 +92,24 @@ type CodeCell struct {
 }
 
 func (c *RawCell) GetCellType() CellType {
-	return CellTypeRaw
+	return c.CellType
 }
 
 func (c *MarkdownCell) GetCellType() CellType {
-	return CellTypeMarkdown
+	return c.CellType
 }
 
 func (c *CodeCell) GetCellType() CellType {
-	return CellTypeCode
+	return c.CellType
 }
 
-// v4.0 - v4.5
-// execute_result "required": ["output_type", "data", "metadata", "execution_count"]
-// display_data   "required": ["output_type", "data", "metadata"]
-// stream         "required": ["output_type", "name", "text"]
-// error          "required": ["output_type", "ename", "evalue", "traceback"]
-//
+// For nbformat versions v4.0 to v4.5:
+// A execute_result output must include the fields: ["output_type", "data", "metadata", "execution_count"]
+// A display_data   output must include the fields: ["output_type", "data", "metadata"]
+// A stream         output must include the fields: ["output_type", "name", "text"]
+// A error          output must include the fields: ["output_type", "ename", "evalue", "traceback"]
 // The output_type field is the only required field across different OutputTypes,
-// and all other fields are tagged with omitempty,
+// and all other fields are tagged with omitempty.
 type Output struct {
 	OutputType     OutputType `json:"output_type"`
 	Data           StringMap  `json:"data,omitempty"`
@@ -141,31 +138,31 @@ func (n *Notebook) UnmarshalJSON(data []byte) error {
 	n.NbformatMinor = aux.NbformatMinor
 	n.Nbformat = aux.Nbformat
 
-	for _, rawCell := range aux.Cells {
+	for _, auxCell := range aux.Cells {
 		var cellType struct {
 			CellType string `json:"cell_type"`
 		}
-		if err := json.Unmarshal(rawCell, &cellType); err != nil {
+		if err := json.Unmarshal(auxCell, &cellType); err != nil {
 			return err
 		}
 
 		var cell Cell
 		switch cellType.CellType {
 		case "raw":
-			var rawContent RawCell
-			if err := json.Unmarshal(rawCell, &rawContent); err != nil {
+			var rawCell RawCell
+			if err := json.Unmarshal(auxCell, &rawCell); err != nil {
 				return err
 			}
-			cell = &rawContent
+			cell = &rawCell
 		case "markdown":
 			var markdownCell MarkdownCell
-			if err := json.Unmarshal(rawCell, &markdownCell); err != nil {
+			if err := json.Unmarshal(auxCell, &markdownCell); err != nil {
 				return err
 			}
 			cell = &markdownCell
 		case "code":
 			var codeCell CodeCell
-			if err := json.Unmarshal(rawCell, &codeCell); err != nil {
+			if err := json.Unmarshal(auxCell, &codeCell); err != nil {
 				return err
 			}
 			cell = &codeCell
