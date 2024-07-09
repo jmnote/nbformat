@@ -1,9 +1,6 @@
 package nbformat
 
-import (
-	"encoding/json"
-	"fmt"
-)
+import "encoding/json"
 
 type (
 	CellType   string
@@ -61,46 +58,30 @@ type Kernelspec struct {
 //
 // This means that in version v4.5, the "id" field is added as a requirement for all types of cells, in addition to the previously required fields.
 // However, the "id" field will be set to "omitempty" to maintain backward compatibility.
-type Cell interface {
-	GetCellType() CellType
-}
-
-type RawCell struct {
-	ID          string    `json:"id,omitempty"`
-	CellType    CellType  `json:"cell_type"`
-	Metadata    StringMap `json:"metadata"`
-	Source      []string  `json:"source"`
-	Attachments StringMap `json:"attachments,omitempty"`
-}
-
-type MarkdownCell struct {
-	ID          string    `json:"id,omitempty"`
-	CellType    CellType  `json:"cell_type"`
-	Metadata    StringMap `json:"metadata"`
-	Source      []string  `json:"source"`
-	Attachments StringMap `json:"attachments,omitempty"`
-}
-
-type CodeCell struct {
+type Cell struct {
 	ID             string    `json:"id,omitempty"`
 	CellType       CellType  `json:"cell_type"`
 	Metadata       StringMap `json:"metadata"`
 	Source         []string  `json:"source"`
-	Outputs        []Output  `json:"outputs"`
-	ExecutionCount int       `json:"execution_count"`
+	Outputs        []Output  `json:"outputs,omitempty"`
+	ExecutionCount int       `json:"execution_count,omitempty"`
 	Attachments    StringMap `json:"attachments,omitempty"`
 }
 
-func (c *RawCell) GetCellType() CellType {
-	return c.CellType
-}
-
-func (c *MarkdownCell) GetCellType() CellType {
-	return c.CellType
-}
-
-func (c *CodeCell) GetCellType() CellType {
-	return c.CellType
+func (c Cell) MarshalJSON() ([]byte, error) {
+	type Alias Cell
+	aux := struct {
+		*Alias
+		Outputs        *[]Output `json:"outputs,omitempty"`
+		ExecutionCount *int      `json:"execution_count,omitempty"`
+	}{
+		Alias: (*Alias)(&c),
+	}
+	if c.CellType == CellTypeCode {
+		aux.Outputs = &c.Outputs
+		aux.ExecutionCount = &c.ExecutionCount
+	}
+	return json.Marshal(aux)
 }
 
 // For nbformat versions v4.0 to v4.5:
@@ -120,56 +101,4 @@ type Output struct {
 	Ename          string     `json:"ename,omitempty"`
 	Evalue         string     `json:"evalue,omitempty"`
 	Traceback      []string   `json:"traceback,omitempty"`
-}
-
-// UnmarshalJSON custom unmarshal function for Notebook
-func (n *Notebook) UnmarshalJSON(data []byte) error {
-	var aux struct {
-		Metadata      Metadata          `json:"metadata"`
-		NbformatMinor int               `json:"nbformat_minor"`
-		Nbformat      int               `json:"nbformat"`
-		Cells         []json.RawMessage `json:"cells"`
-	}
-	if err := json.Unmarshal(data, &aux); err != nil {
-		return err
-	}
-
-	n.Metadata = aux.Metadata
-	n.NbformatMinor = aux.NbformatMinor
-	n.Nbformat = aux.Nbformat
-
-	for _, auxCell := range aux.Cells {
-		var cellType struct {
-			CellType string `json:"cell_type"`
-		}
-		if err := json.Unmarshal(auxCell, &cellType); err != nil {
-			return err
-		}
-
-		var cell Cell
-		switch cellType.CellType {
-		case "raw":
-			var rawCell RawCell
-			if err := json.Unmarshal(auxCell, &rawCell); err != nil {
-				return err
-			}
-			cell = &rawCell
-		case "markdown":
-			var markdownCell MarkdownCell
-			if err := json.Unmarshal(auxCell, &markdownCell); err != nil {
-				return err
-			}
-			cell = &markdownCell
-		case "code":
-			var codeCell CodeCell
-			if err := json.Unmarshal(auxCell, &codeCell); err != nil {
-				return err
-			}
-			cell = &codeCell
-		default:
-			return fmt.Errorf("unknown cell type: %s", cellType.CellType)
-		}
-		n.Cells = append(n.Cells, cell)
-	}
-	return nil
 }
