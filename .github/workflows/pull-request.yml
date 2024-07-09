@@ -16,6 +16,18 @@ jobs:
         go-version: '1.22'
     - run: make test
 
+  cover:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-go@v5
+      with:
+        go-version: '1.22'
+    - run: go test ./... -coverprofile=cover.out
+    - uses: shogo82148/actions-goveralls@v1
+      with:
+        path-to-profile: cover.out
+
   lint:
     runs-on: ubuntu-latest
     steps:
