@@ -1,7 +1,10 @@
-name: goveralls
-on: [push, pull_request]
+name: push-main
+on:
+  push:
+    branches:
+    - main
 jobs:
-  goveralls:
+  cover:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
