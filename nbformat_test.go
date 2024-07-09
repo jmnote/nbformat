@@ -41,7 +41,7 @@ func readFile(filePath string) string {
 func setNotebooks() {
 	notebook1 = Notebook{
 		Cells: []Cell{
-			&CodeCell{
+			{
 				CellType: "code",
 				Source:   []string{},
 				Metadata: StringMap{},
@@ -72,7 +72,7 @@ func setNotebooks() {
 	}
 	notebook2 = Notebook{
 		Cells: []Cell{
-			&CodeCell{
+			{
 				CellType:       "code",
 				ExecutionCount: 1,
 				Metadata: StringMap{
@@ -116,7 +116,7 @@ func setNotebooks() {
 	}
 	notebook3 = Notebook{
 		Cells: []Cell{
-			&CodeCell{
+			{
 				CellType:       "code",
 				ExecutionCount: 0,
 				Metadata:       StringMap{},
@@ -144,7 +144,7 @@ func setNotebooks() {
 	}
 	notebook4 = Notebook{
 		Cells: []Cell{
-			&CodeCell{
+			{
 				CellType:       "code",
 				ExecutionCount: 1,
 				Metadata: StringMap{
@@ -182,32 +182,6 @@ func setNotebooks() {
 		},
 		Nbformat:      4,
 		NbformatMinor: 4,
-	}
-}
-
-func TestGetCellType(t *testing.T) {
-	testCases := []struct {
-		cell         Cell
-		wantCellType CellType
-	}{
-		{
-			&CodeCell{CellType: CellTypeCode},
-			CellTypeCode,
-		},
-		{
-			&MarkdownCell{CellType: CellTypeMarkdown},
-			CellTypeMarkdown,
-		},
-		{
-			&RawCell{CellType: CellTypeRaw},
-			CellTypeRaw,
-		},
-	}
-	for _, tc := range testCases {
-		t.Run(string(tc.wantCellType), func(t *testing.T) {
-			got := tc.cell.GetCellType()
-			require.Equal(t, tc.wantCellType, got)
-		})
 	}
 }
 
