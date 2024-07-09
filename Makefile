@@ -1,4 +1,4 @@
-GOLANGCI_LINT_VER := v1.58.1
+GOLANGCI_LINT_VER := v1.59.1
 GO_LICENSES_VER := v1.6.0
 
 test:
@@ -6,8 +6,8 @@ test:
 .PHONY: test
 
 cover:
-	go test -failfast -coverprofile=/tmp/coverage.out ./...
-	go tool cover -func /tmp/coverage.out
+	go test -failfast -coverprofile=/tmp/cover.out ./...
+	go tool cover -func /tmp/cover.out
 .PHONY: cover
 
 lint:
