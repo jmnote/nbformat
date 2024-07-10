@@ -1,6 +1,6 @@
 # Notebook Format (nbformat) for Go
 
-[![pull-request](https://github.com/jmnote/nbformat/actions/workflows/pull-request.yml/badge.svg)](https://github.com/jmnote/nbformat/actions/workflows/pull-request.yml)
+[![main](https://github.com/jmnote/nbformat/actions/workflows/main.yml/badge.svg)](https://github.com/jmnote/nbformat/actions/workflows/main.yml)
 [![Coverage Status](https://coveralls.io/repos/github/jmnote/nbformat/badge.svg?branch=main)](https://coveralls.io/github/jmnote/nbformat?branch=main)
 [![GitHub license](https://img.shields.io/github/license/jmnote/nbformat.svg)](https://github.com/jmnote/nbformat/blob/main/LICENSE)
 [![Go Report Card](https://goreportcard.com/badge/github.com/jmnote/nbformat)](https://goreportcard.com/report/github.com/jmnote/nbformat)
